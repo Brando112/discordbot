@@ -149,12 +149,24 @@ async def on_message(message):
         pInvMon = pInvMon.strip()
         pInvMon = int(pInvMon)
 
-        if pInvPole != 'Bamboo_Pole':
-            if pInvMon >= 50000:
-                Players.update({'Pole': 'Bamboo_Pole'}, where('ID') == player_id)
+        if pInvPole != 'Bamboo Pole':
+            if pInvMon >= 5000:
+                Players.update({'Pole': 'Bamboo Pole'}, where('ID') == player_id)
+                inventory1 = Players.search(where('ID') == player_id)
+                inventory1 = str(inventory1)
+                inventory2 = inventory1[33:]
+                Money = inventory2.split(':')
+                money = Money[1]
+                currency = Money[2]
+                currency = currency.split(",")[0].strip()
+                new_currency = int(currency) - 5000
+                print(currency)
+                Players.update({'Money': new_currency}, where("ID") == player_id)
                 await message.channel.send("You have bought a Bamboo Pole!")
             else:
                 await message.channel.send("You don't have enough money.")
+        else:
+            await message.channel.send("You already own a Bamboo Pole")
         
     elif message.content.startswith('$eat'):
         player_id = message.author.id
@@ -189,4 +201,4 @@ async def on_message(message):
             await message.channel.send("You are not able to eat right now.")
 
 
-client.run('')
+client.run('Nope')
