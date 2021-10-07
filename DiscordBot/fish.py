@@ -14,6 +14,8 @@ dhp_remain = 35
 
 def fish_cmd(player_id):
 
+    
+
     inventory1 = Players.search(where('ID') == player_id)
     inventory1 = str(inventory1)
     inventory = inventory1[33:]
@@ -29,11 +31,26 @@ def fish_cmd(player_id):
     currency = currency.strip()
     currency = int(currency)
 
-    while True:
-        fish_num = random.randint(1, 10000)
-        # fish_num = 10
+    pInv = Players.search(where('ID') == player_id)
+    pInvPole = str(pInv).split(':')[4]
+    pInvPole = str(pInvPole).split("'")[1]
+    print(pInvPole)
 
-        if fish_num < 1100:
+
+    while True:
+        if pInvPole == "Default":
+            base_chance = 1100
+            Rare_chance = 16
+            Legendary_chance = 1
+            fish_num = random.randint(1, 10000)
+        elif pInvPole == "Bamboo Pole":
+            base_chance = 1089
+            Rare_chance = 32
+            Legendary_chance = 2
+            fish_num = random.randint(1, 9995)
+            # fish_num = 10
+
+        if fish_num < (base_chance):
             Players.update(increment('Bass'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Bass!')
 
@@ -53,7 +70,7 @@ def fish_cmd(player_id):
             fished = 'bass'
 
             return fished
-        elif fish_num < 2200:
+        elif fish_num < ((base_chance*2)):
             Players.update(increment('Perch'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Perch!')
             fish_inv = Players.search(where('ID') == player_id)
@@ -71,7 +88,7 @@ def fish_cmd(player_id):
             fished = 'perch'
 
             return fished
-        elif fish_num < 3300:
+        elif fish_num < ((base_chance*3)):
             Players.update(increment('Carp'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Carp!')
 
@@ -91,7 +108,7 @@ def fish_cmd(player_id):
             fished = 'carp'
 
             return fished
-        elif fish_num < 4400:
+        elif fish_num < ((base_chance*4)):
             Players.update(increment('Catfish'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Catfish!')
 
@@ -110,7 +127,7 @@ def fish_cmd(player_id):
             fished = 'catfish'
 
             return fished
-        elif fish_num < 5500:
+        elif fish_num < ((base_chance*5)):
             Players.update(increment('Peruvian Anchoveta'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Peruvian Anchoveta!')
 
@@ -129,7 +146,7 @@ def fish_cmd(player_id):
             fished = 'peruvian anchoveta'
 
             return fished
-        elif fish_num < 6600:
+        elif fish_num < ((base_chance*6)):
             Players.update(increment('Tuna'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Tuna!')
 
@@ -150,7 +167,7 @@ def fish_cmd(player_id):
             fished = 'tuna'
 
             return fished
-        elif fish_num < 7700:
+        elif fish_num < ((base_chance*7)):
             Players.update(increment('Salmon'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Salmon!') 
 
@@ -169,7 +186,7 @@ def fish_cmd(player_id):
             fished = 'salmon'
 
             return fished          
-        elif fish_num < 8800:
+        elif fish_num < ((base_chance*8)):
             Players.update(increment('Tilapia'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Tilapia!')
 
@@ -188,7 +205,7 @@ def fish_cmd(player_id):
             fished = 'tilapia'
 
             return fished
-        elif fish_num < 9900:
+        elif fish_num < ((base_chance*9)):
             Players.update(increment('Alaskan Pollock'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Alaskan Pollock!')
 
@@ -208,7 +225,7 @@ def fish_cmd(player_id):
             fished = 'alaskan pollock'
 
             return fished
-        elif fish_num < 9916:
+        elif fish_num < ((base_chance*9) + Rare_chance):
             Players.update(increment('Coelacanth'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Coelacanth!')
 
@@ -227,7 +244,7 @@ def fish_cmd(player_id):
             fished = 'RARE Coelacanth'
 
             return fished
-        elif fish_num < 9932:
+        elif fish_num < ((base_chance*9) + Rare_chance*2):
             Players.update(increment('Sturgeon'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Sturgeon!')
 
@@ -246,7 +263,7 @@ def fish_cmd(player_id):
             fished = 'RARE sturgeon'
 
             return fished
-        elif fish_num < 9948:
+        elif fish_num < ((base_chance*9) + Rare_chance*3):
             Players.update(increment('Eel'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Eel!')
 
@@ -265,7 +282,7 @@ def fish_cmd(player_id):
             fished = 'RARE Eel'
 
             return fished
-        elif fish_num < 9964:
+        elif fish_num < ((base_chance*9) + Rare_chance*4):
             Players.update(increment('Smalltooth Sawfish'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Smalltooth Sawfish!')
 
@@ -284,7 +301,7 @@ def fish_cmd(player_id):
             fished = 'RARE  Smalltooh Sawfish'
 
             return fished
-        elif fish_num < 9980:
+        elif fish_num < ((base_chance*9) + Rare_chance*5):
             Players.update(increment('Big Catfish'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Big Catfish!')
 
@@ -303,7 +320,7 @@ def fish_cmd(player_id):
             fished = 'RARE Big Catfish'
 
             return fished
-        elif fish_num < 9996:
+        elif fish_num < ((base_chance*9) + Rare_chance*6):
             Players.update(increment('Sunfish'), where('ID') == player_id)
             # await message.channel.send('You caught a(n) Sunfish!')
         
@@ -323,7 +340,7 @@ def fish_cmd(player_id):
             fished = 'RARE Sunfish'
 
             return fished
-        elif fish_num < 9999:
+        elif fish_num < ((base_chance*9) + (Rare_chance*2) + (Legendary_chance)):
             fName = 'Devils Hole Pupfish'
             dhp_remain = Fish.search(where('Name') == 'Devils Hole Pupfish')
             dhp_remain = str(dhp_remain).split(':')[-1]
@@ -355,3 +372,6 @@ def fish_cmd(player_id):
                 return fished
             else:
                 continue
+
+# For catch rates use variable that checks for rod
+
