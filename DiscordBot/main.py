@@ -57,23 +57,12 @@ async def on_message(message):
         
 
     elif message.content.startswith('$inventory'):
-        player_id = message.author.id
-        # print(player_id)
-        user_name = message.content
-        try:
-            user_name = str(user_name).split(" ")[1].strip().title()
-            print(user_name)
+        player_id = message.mentions
+        player_id = str(player_id).split("=")[1].split(" ")[0].strip()
+        player_id = int(player_id)
             
-            inventory1 = db.search(Players.userName == user_name)
-            print("Still here")
-            player_id = inventory1.split(":")[1].strip()
-            print(inventory1 + "\n you are here")
-            fish_inv = Players.search(where('ID') == player_id)
-        except:
-            user_name = player_id
-            inventory1 = Players.search(where('ID') == user_name)
-            fish_inv = Players.search(where('ID') == user_name)
-        # print(user_name)
+        inventory1 = Players.search(where("ID") == player_id)
+        fish_inv = Players.search(where('ID') == player_id)
 
         inventory1 = str(inventory1)
         inventory3 = inventory1[33:]
