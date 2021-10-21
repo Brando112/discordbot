@@ -14,8 +14,6 @@ dhp_remain = 35
 
 def fish_cmd(player_id):
 
-    
-
     inventory1 = Players.search(where('ID') == player_id)
     inventory1 = str(inventory1)
     inventory = inventory1[33:]
@@ -34,8 +32,6 @@ def fish_cmd(player_id):
     pInv = Players.search(where('ID') == player_id)
     pInvPole = str(pInv).split(':')[4]
     pInvPole = str(pInvPole).split("'")[1]
-    print(pInvPole)
-
 
     while True:
         if pInvPole == "Default":
@@ -372,6 +368,3 @@ def fish_cmd(player_id):
                 return fished
             else:
                 continue
-
-# For catch rates use variable that checks for rod
-

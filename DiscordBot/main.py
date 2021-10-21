@@ -1,8 +1,5 @@
 import discord
-import random
-import fish
-import inventory
-import shoppy
+import fish, inventory, shoppy, eat
 from discord import player
 from tinydb import TinyDB, Query, where
 from tinydb.operations import decrement, increment
@@ -14,6 +11,7 @@ Players = db.table('Players')
 Fish = db.table('Fish')
 Shop = db.table('Shop')
 dhp_remain = 35
+hunger = 1000
 
 client = discord.Client()
 
@@ -26,8 +24,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+    if message.content.startswith('$ping'):
+        await message.channel.send('pong')
 
     elif message.content.startswith('$fish'):
         player_id = message.author.id
@@ -111,6 +109,7 @@ async def on_message(message):
         hunger = Players.search(where("ID") == player_id)
         hunger = str(hunger).split(":")[21].split("}]")[0]
         hunger = str(hunger).strip()
+        print(hunger)
         
         await message.channel.send(str(Name) + ": " + str(user) + '\n' + str(pole) + ": " + str(Pole) + "\n" + "Money: " + "$" +  str(currency).strip() + "\n" + "Hunger: " + str(hunger) + "\n----------COMMON-----\n" +
          Bass.strip() +" | " + perch.strip() +" | "+  Catfish.strip() + " | " + Peruvian_Anchoveta.strip() + "\n" + 
@@ -160,34 +159,9 @@ async def on_message(message):
     elif message.content.startswith('$eat'):
         player_id = message.author.id
 
-        hunger = Players.search(where("ID") == player_id)
-        hunger = str(hunger).split(":")[21].split("}]")[0]
-        hunger = str(hunger).strip()
-        hunger = int(hunger)
-        new_hunger = hunger + 10
+        eats = eat.eat_cmd(player_id)
 
-        inventory1 = Players.search(where('ID') == player_id)
-        inventory1 = str(inventory1)
-        inventory2 = inventory1[33:]
-        Money = inventory2.split(':')
-        money = Money[1]
-        currency = Money[2]
-        currency = currency.split(",")[0].strip()
-        new_currency = int(currency) - 2
-        
-        User = inventory1.split(':')
-        user = User[2]
-        User = user.split("'")
-        user = User[1] # Final
-
-        if int(hunger) >= 0 and int(hunger) < 100 and int(currency) > 0:
-
-            Players.update({"Hunger": new_hunger}, where("ID") == player_id)
-            Players.update({"Money": new_currency}, where("ID") == player_id)
-            await message.channel.send(user + " ate!")
-        
-        else:
-            await message.channel.send("You are not able to eat right now.")
+        await message.channel.send(eats)
 
 
-client.run('Nope')
+client.run('ODg2MDgxODkyODcxNDU0Nzkw.YTwaEQ.dGLg2ZjCz6DxEf_Jra1GSBIUAlU')
