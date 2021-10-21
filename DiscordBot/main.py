@@ -164,4 +164,4 @@ async def on_message(message):
         await message.channel.send(eats)
 
 
-client.run('ODg2MDgxODkyODcxNDU0Nzkw.YTwaEQ.dGLg2ZjCz6DxEf_Jra1GSBIUAlU')
+client.run('Nope')
