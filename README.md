@@ -2,3 +2,5 @@
 
 Delopers make sure to always pull before changing code then push after you are done changing code.
 Feel free to use branches if you are worried about breaking code
+
+Discord invite: https://discord.gg/JaD9Tvpv
