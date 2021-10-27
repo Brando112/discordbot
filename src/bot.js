@@ -119,5 +119,5 @@ client.on('interactionCreate', async (Interaction) => {
         })
     }
 })
-
+// coment
 client.login(config.token)
