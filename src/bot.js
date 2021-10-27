@@ -24,6 +24,25 @@ client.on('ready', () => {
         name: 'ping',
         description: 'Replies with pong.'
     })
+
+    commands?.create({
+        name: 'add',
+        description: 'Adds two numbers.',
+        options: [
+            {
+                name: 'num1',
+                description: 'The first number.',
+                required: true,
+                type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
+            },
+            {
+                name: 'num2',
+                description: 'The second number.',
+                required: true,
+                type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
+            }
+        ]
+    })
 });
 
 client.on('interactionCreate', async (Interaction) => {
@@ -36,6 +55,15 @@ client.on('interactionCreate', async (Interaction) => {
     if (commandName === 'ping') {
         Interaction.reply({
             content: 'pong',
+            ephemeral: true
+        })
+    }
+    else if (commandName === 'add'){
+        const num1 = options.getNumber('num1')
+        const num2 = options.getNumber('num2')
+
+        Interaction.reply({
+            content: `The sum is ${num1 + num2}`, // Keep in mind that template literals uses "grave" instead of single quotes
             ephemeral: true
         })
     }
