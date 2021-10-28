@@ -2,9 +2,17 @@ console.clear();
 
 const Discord = require('discord.js');
 const config = require("./data/config.json");
+const mysql = require('mysql');
 
 const intents = new Discord.Intents(32767);
 const client = new Discord.Client({ intents });
+
+var conn = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "DiscordtheGame1",
+    database: "discordbot"
+})
 
 client.on('ready', () => {
     console.log("Bot is online")
@@ -61,6 +69,13 @@ client.on('interactionCreate', async (Interaction) => {
     else if (commandName === 'add'){
         const num1 = options.getNumber('num1')
         const num2 = options.getNumber('num2')
+
+        const userid = Interaction.user.id
+        console.log(userid)
+        conn.query(`SELECT * FROM player where id = '${userid}'`, (err, rows) =>{
+            if(err) throw err;
+            console.log(rows);
+        })
 
         Interaction.reply({
             content: `The sum is ${num1 + num2}`, // Keep in mind that template literals uses "grave" instead of single quotes
