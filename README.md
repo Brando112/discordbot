@@ -1,6 +1,5 @@
 # discordbot
 
-Delopers make sure to always pull before changing code then push after you are done changing code.
-Feel free to use branches if you are worried about breaking code
+upload changes to a branch other than 'main' or 'backup'
 
 Discord invite: https://discord.gg/JaD9Tvpv
