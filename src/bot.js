@@ -25,6 +25,9 @@ function fish(userid, money){
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql, console.log);
+
+        
+
         return 'Alaskan Cod'
     }
     else if (randnum < (base_chance*2)){ // Bass
@@ -190,7 +193,7 @@ client.on('interactionCreate', async (Interaction) => {
 
         conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) =>{
             if(err) throw err;
-            console.log(rows);
+            //console.log(rows);
             let sql;
 
             if (rows.length <1) {
@@ -199,13 +202,27 @@ client.on('interactionCreate', async (Interaction) => {
             conn.query(sql, console.log);
 
             var fish_caught = fish(userid);
+
+            conn.query(`SELECT * FROM fish WHERE id = '${userid}' AND fish_name = '${fish_caught}';`, (err, rows) =>{
+                if(err) throw err;
+                //console.log(rows);
+                let sql;
+    
+                if (rows.length <1) {
+                    sql = `INSERT INTO fish(fish_name, fish_value, fish_count, id) VALUES ('${fish_caught}', 10, 1, '${userid}')`;
+                }
+                
+                if (rows.length >0){
+                    sql = `UPDATE fish SET fish_count = (fish_count + 1) WHERE id = '${userid}' AND fish_name = '${fish_caught}';`;
+                }
+                conn.query(sql, console.log);
+            })
+
             Interaction.reply({
                 content: `You caught a(n) ${fish_caught}!`,
                 ephemeral: false
             })
         })
-
-        
     }
 })
 
