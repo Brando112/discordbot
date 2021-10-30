@@ -28,97 +28,97 @@ function fish(userid, money){
 
         
 
-        return 'Alaskan Cod'
+        return ['Alaskan Cod', 10]
     }
     else if (randnum < (base_chance*2)){ // Bass
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Bass'
+        return ['Bass', 10]
     }
     else if (randnum < (base_chance*3)){ // Carp
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Carp'
+        return ['Carp', 10]
     }
     else if (randnum < (base_chance*4)){ // Catfish
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Catfish'
+        return ['Catfish', 10]
     }
     else if (randnum < (base_chance*5)){ // Peruvian Anchoveta
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Peruvian Anchoveta'
+        return ['Peruvian Anchoveta', 10]
     }
     else if (randnum < (base_chance*6)){ // Tuna
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Tuna'
+        return ['Tuna', 10]
     }
     else if (randnum < (base_chance*7)){ // Salmon
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Salmon'
+        return ['Salmon', 10]
     }
     else if (randnum < (base_chance*8)){ // Tilapia
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Tilapia'
+        return ['Tilapia', 10]
     }
     else if (randnum < (base_chance*9)){ // Alaskan Pollock
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
         conn.query(sql);
-        return 'Alaskan Pollock'
+        return ['Alaskan Pollock', 10]
     }
     else if (randnum < (base_chance*9) + rare_chance){ // Coelacanth
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
         conn.query(sql);
-        return 'Coelacanth'
+        return ['Coelacanth', 100]
     }
     else if (randnum < (base_chance*9) + rare_chance*2){ // Sturgeon
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
         conn.query(sql);
-        return 'Sturgeon'
+        return ['Sturgeon', 100]
     }
     else if (randnum < (base_chance*9) + rare_chance*3){ // Eel
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
         conn.query(sql);
-        return 'Eel'
+        return ['Eel', 100]
     }
     else if (randnum < (base_chance*9) + rare_chance*4){ // Smalltooth Sawfish
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
         conn.query(sql);
-        return 'Smalltooth Sawfish'
+        return ['Smalltooth Sawfish', 100]
     }
     else if (randnum < (base_chance*9) + rare_chance*5){ // Big Catfish
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
         conn.query(sql);
-        return 'Big Catfish'
+        return ['Big Catfish', 100]
     }
     else if (randnum < (base_chance*9) + rare_chance*6){ // Sunfish
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
         conn.query(sql);
-        return 'Sunfish'
+        return ['Sunfish', 100]
     }
     else if (randnum < (base_chance*9) + (rare_chance*6) + (legendary_chance +3)){ // Devils Hole Pupfish
         let sql;
         sql = `UPDATE player SET money = (money + 5000) where id = '${userid}'`;
         conn.query(sql);
-        return 'Devils Hole Pupfish'
+        return ['Devils Hole Pupfish', 5000]
     }
 }
 
@@ -192,8 +192,10 @@ client.on('interactionCreate', async (Interaction) => {
             ephemeral: true
         })
     }
+
     else if (commandName === 'stats'){
         const userid = Interaction.user.id
+        
         conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) =>{
             if(err) throw err;
             //console.log(rows);
@@ -212,37 +214,40 @@ client.on('interactionCreate', async (Interaction) => {
     else if (commandName === 'fish'){
         const userid = Interaction.user.id
         const user_name = (Interaction.user.tag)
-        console.log(`${user_name} has fished.`)
+        console.log(`${user_name} has fished. ${userid}`)
 
-        conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) =>{
+        conn.query(`SELECT * FROM player WHERE id = '${userid}';`, (err, rows) =>{
             if(err) throw err;
-            //console.log(rows);
+            console.log(rows);
             let sql;
 
             if (rows.length <1) {
                 sql = `INSERT INTO player(id, username, hp, hunger, money, pole, location) VALUES ('${userid}','${user_name}',100,100,0,'Default','Default')`
+                conn.query(sql);
             }
-            conn.query(sql);
+            
 
             var fish_caught = fish(userid);
 
-            conn.query(`SELECT * FROM fish WHERE id = '${userid}' AND fish_name = '${fish_caught}';`, (err, rows) =>{
+            conn.query(`SELECT * FROM fish WHERE id = '${userid}' AND fish_name = '${fish_caught[0]}';`, (err, rows) =>{
                 if(err) throw err;
                 //console.log(rows);
                 let sql;
     
                 if (rows.length <1) {
-                    sql = `INSERT INTO fish(fish_name, fish_value, fish_count, id) VALUES ('${fish_caught}', 10, 1, '${userid}')`;
+                    sql = `INSERT INTO fish(fish_name, fish_value, fish_count, id) VALUES ('${fish_caught[0]}', ${fish_caught[1]}, 1, '${userid}');`;
+                    conn.query(sql);
                 }
                 
                 if (rows.length >0){
-                    sql = `UPDATE fish SET fish_count = (fish_count + 1) WHERE id = '${userid}' AND fish_name = '${fish_caught}';`;
+                    sql = `UPDATE fish SET fish_count = (fish_count + 1) WHERE id = '${userid}' AND fish_name = '${fish_caught[0]}';`;
+                    conn.query(sql);
                 }
-                conn.query(sql);
+                
             })
 
             Interaction.reply({
-                content: `You caught a(n) ${fish_caught}!`,
+                content: `${user_name} caught a(n) ${fish_caught[0]}!`,
                 ephemeral: false
             })
         })
