@@ -212,6 +212,7 @@ client.on('interactionCreate', async (Interaction) => {
     else if (commandName === 'fish'){
         const userid = Interaction.user.id
         const user_name = (Interaction.user.tag)
+        console.log(`${user_name} has fished.`)
 
         conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) =>{
             if(err) throw err;
