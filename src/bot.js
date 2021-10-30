@@ -164,6 +164,11 @@ client.on('ready', () => {
             }
         ]
     })
+
+    commands?.create({
+        name: 'stats',
+        description: 'Shows player stats'
+    })
 });
 
 client.on('interactionCreate', async (Interaction) => {
@@ -185,6 +190,23 @@ client.on('interactionCreate', async (Interaction) => {
         Interaction.reply({
             content: `The sum is ${num1 + num2}`, // Keep in mind that template literals uses "grave" instead of single quotes
             ephemeral: true
+        })
+    }
+    else if (commandName === 'stats'){
+        const userid = Interaction.user.id
+        conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) =>{
+            if(err) throw err;
+            //console.log(rows);
+            let displayname = rows[0].username;
+            let hp = rows[0].hp;
+            let hunger = rows[0].hunger;
+            let money = rows[0].money;
+            let pole = rows[0].pole;
+            let location = rows[0].location;
+            Interaction.reply({
+                content: `Name: ${displayname}\nHP: ${hp}\nHunger: ${hunger}\nMoney: ${money}\nPole: ${pole}\nLocation: ${location}`,
+                ephemeral: true
+            })
         })
     }
     else if (commandName === 'fish'){
