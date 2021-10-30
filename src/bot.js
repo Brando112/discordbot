@@ -24,7 +24,7 @@ function fish(userid, money){
     if (randnum < (base_chance)){ // Alaskan cod
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
 
         
 
@@ -33,91 +33,91 @@ function fish(userid, money){
     else if (randnum < (base_chance*2)){ // Bass
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Bass'
     }
     else if (randnum < (base_chance*3)){ // Carp
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Carp'
     }
     else if (randnum < (base_chance*4)){ // Catfish
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Catfish'
     }
     else if (randnum < (base_chance*5)){ // Peruvian Anchoveta
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Peruvian Anchoveta'
     }
     else if (randnum < (base_chance*6)){ // Tuna
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Tuna'
     }
     else if (randnum < (base_chance*7)){ // Salmon
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Salmon'
     }
     else if (randnum < (base_chance*8)){ // Tilapia
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Tilapia'
     }
     else if (randnum < (base_chance*9)){ // Alaskan Pollock
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Alaskan Pollock'
     }
     else if (randnum < (base_chance*9) + rare_chance){ // Coelacanth
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Coelacanth'
     }
     else if (randnum < (base_chance*9) + rare_chance*2){ // Sturgeon
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Sturgeon'
     }
     else if (randnum < (base_chance*9) + rare_chance*3){ // Eel
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Eel'
     }
     else if (randnum < (base_chance*9) + rare_chance*4){ // Smalltooth Sawfish
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Smalltooth Sawfish'
     }
     else if (randnum < (base_chance*9) + rare_chance*5){ // Big Catfish
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Big Catfish'
     }
     else if (randnum < (base_chance*9) + rare_chance*6){ // Sunfish
         let sql;
         sql = `UPDATE player SET money = (money + 100) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Sunfish'
     }
     else if (randnum < (base_chance*9) + (rare_chance*6) + (legendary_chance +3)){ // Devils Hole Pupfish
         let sql;
         sql = `UPDATE player SET money = (money + 5000) where id = '${userid}'`;
-        conn.query(sql, console.log);
+        conn.query(sql);
         return 'Devils Hole Pupfish'
     }
 }
@@ -222,7 +222,7 @@ client.on('interactionCreate', async (Interaction) => {
             if (rows.length <1) {
                 sql = `INSERT INTO player(id, username, hp, hunger, money, pole, location) VALUES ('${userid}','${user_name}',100,100,0,'Default','Default')`
             }
-            conn.query(sql, console.log);
+            conn.query(sql);
 
             var fish_caught = fish(userid);
 
@@ -238,7 +238,7 @@ client.on('interactionCreate', async (Interaction) => {
                 if (rows.length >0){
                     sql = `UPDATE fish SET fish_count = (fish_count + 1) WHERE id = '${userid}' AND fish_name = '${fish_caught}';`;
                 }
-                conn.query(sql, console.log);
+                conn.query(sql);
             })
 
             Interaction.reply({
