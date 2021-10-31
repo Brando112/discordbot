@@ -179,7 +179,7 @@ client.on('ready', () => {
         options: [
             {
                 name: 'username',
-                description: 'The player you wish to view.',
+                description: 'The player you wish to view. CASE SENSITIVE',
                 required: false,
                 type: Discord.Constants.ApplicationCommandOptionTypes.STRING
             }
