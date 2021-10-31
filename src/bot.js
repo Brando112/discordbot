@@ -169,6 +169,11 @@ client.on('ready', () => {
         name: 'stats',
         description: 'Shows player stats'
     })
+
+    commands?.create({
+        name: 'inventory',
+        description: 'Displays player inventory.'
+    })
 });
 
 client.on('interactionCreate', async (Interaction) => {
@@ -190,6 +195,26 @@ client.on('interactionCreate', async (Interaction) => {
         Interaction.reply({
             content: `The sum is ${num1 + num2}`, // Keep in mind that template literals uses "grave" instead of single quotes
             ephemeral: true
+        })
+    }
+
+    else if (commandName ==='inventory'){
+        let inventory = [];
+        const userid = Interaction.user.id
+        conn.query(`SELECT * FROM fish WHERE id = '${userid}'`, (err, rows) =>{
+            // FISH INVENTORY
+            for (var i =0; i < rows.length; i++) {
+                fish_name = rows[i].fish_name;
+                fish_count = rows[i].fish_count;
+                inventory = `${inventory}\n` +  `${fish_name}: ${fish_count}`
+            }
+            //PUT PVE ITEMS HERE
+
+
+            Interaction.reply({
+                content: `-----FISH CAUGHT-----\n${inventory}`,
+                ephemeral: true
+            })
         })
     }
 
