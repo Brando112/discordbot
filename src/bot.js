@@ -14,6 +14,7 @@ var conn = mysql.createConnection({
     database: "discordbot"
 })
 
+// Function for fishing
 function fish(userid, money){
     var randnum = Math.floor(Math.random() * (10000 - 1 + 1) ) + 1;
     let base_chance = 1100
@@ -24,10 +25,7 @@ function fish(userid, money){
     if (randnum < (base_chance)){ // Alaskan cod
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
-        conn.query(sql);
-
-        
-
+        conn.query(sql)
         return ['Alaskan Cod', 10, 'COMMON']
     }
     else if (randnum < (base_chance*2)){ // Bass
@@ -122,6 +120,7 @@ function fish(userid, money){
     }
 }
 
+// Turns the bot online... is the bot
 client.on('ready', () => {
     console.log("Bot is online")
 
@@ -136,6 +135,7 @@ client.on('ready', () => {
         commands = client.application?.commands
     }
 
+    // Command generation
     commands?.create({
         name: 'ping',
         description: 'Replies with pong.'
@@ -176,8 +176,9 @@ client.on('ready', () => {
     })
 });
 
+// Is fired when an interaction is done (/fish)
 client.on('interactionCreate', async (Interaction) => {
-    if (!Interaction.isCommand()) {
+    if (!Interaction.isCommand()) { // Checks to see if the interaction is a command and if it isn't ignores the following checks
         return
     }
 
@@ -237,6 +238,7 @@ client.on('interactionCreate', async (Interaction) => {
             })
         })
     }
+    
     else if (commandName === 'fish'){
         const userid = Interaction.user.id
         const user_name = (Interaction.user.tag)
