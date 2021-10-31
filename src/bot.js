@@ -124,6 +124,7 @@ function fish(userid, money){
 }
 
 // Turns the bot online... is the bot
+//Also where the commands are stored
 client.on('ready', () => {
     console.log("Bot is online")
 
