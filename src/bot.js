@@ -13,6 +13,9 @@ var conn = mysql.createConnection({
     password: "DiscordtheGame1",
     database: "discordbot"
 })
+var common_inventory;
+var rare_inventory;
+var legendary_inventory;
 
 // Function for fishing
 function fish(userid, money){
@@ -172,7 +175,15 @@ client.on('ready', () => {
 
     commands?.create({
         name: 'inventory',
-        description: 'Displays player inventory.'
+        description: 'Displays player inventory.',
+        options: [
+            {
+                name: 'username',
+                description: 'The player you wish to view.',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+            }
+        ]
     })
 });
 
@@ -200,24 +211,70 @@ client.on('interactionCreate', async (Interaction) => {
     }
 
     else if (commandName ==='inventory'){
-        let inventory = [];
+        const dusername = options.getString('username')
+
+        let common_inventory = '';
+        let rare_inventory = '';
+        let legendary_inventory = '';
         const userid = Interaction.user.id
-        conn.query(`SELECT * FROM fish WHERE id = '${userid}' ORDER BY fish_rarity`, (err, rows) =>{
-            // FISH INVENTORY
-            for (var i =0; i < rows.length; i++) {
-                fish_rarity = rows[i].fish_rarity
-                fish_name = rows[i].fish_name;
-                fish_count = rows[i].fish_count;
-                inventory = `${inventory}` +  `${fish_name}: ${fish_count}\n    Rarity: ${fish_rarity}\n`
-            }
-            //PUT PVE ITEMS HERE
-
-
-            Interaction.reply({
-                content: `-----FISH CAUGHT-----\n${inventory}`,
-                ephemeral: true
+        if (dusername != null){
+            conn.query(`SELECT * FROM fish join player on player.id=fish.id WHERE player.username LIKE '${dusername}%'`, (err, rows) =>{
+                // FISH INVENTORY
+                for (var i =0; i < rows.length; i++) {
+                    fish_rarity = rows[i].fish_rarity
+                    fish_name = rows[i].fish_name;
+                    fish_count = rows[i].fish_count;
+                    if (fish_rarity === 'COMMON'){
+                        common_inventory = `${common_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                    }
+                    else if (fish_rarity === 'RARE'){
+                        rare_inventory = `${rare_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                    }
+                    else if (fish_rarity === 'LEGENDARY'){
+                        legendary_inventory = `${LEGENDARY_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                    }
+                }
+                if (rare_inventory == null){
+                    rare_inventory = '';
+                }
+                if (legendary_inventory == null){
+                    legendary_inventory = '';
+                }
+                Interaction.reply({
+                    content: `-----${dusername}-----\n-----COMMON-----\n${common_inventory}\n-----RARE------\n${rare_inventory}\n-----LEGENDARY-----\n${legendary_inventory}`,
+                    ephemeral: false
+                })
             })
-        })
+        }
+        else {
+            conn.query(`SELECT * FROM fish WHERE id = '${userid}'`, (err, rows) =>{
+                // FISH INVENTORY
+                for (var i =0; i < rows.length; i++) {
+                    fish_rarity = rows[i].fish_rarity
+                    fish_name = rows[i].fish_name;
+                    fish_count = rows[i].fish_count;
+                    if (fish_rarity === 'COMMON'){
+                        common_inventory = `${common_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                    }
+                    else if (fish_rarity === 'RARE'){
+                        rare_inventory = `${rare_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                    }
+                    else if (fish_rarity === 'LEGENDARY'){
+                        legendary_inventory = `${LEGENDARY_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                    }
+                }
+                if (rare_inventory == null){
+                    rare_inventory = '';
+                }
+                if (legendary_inventory == null){
+                    legendary_inventory = '';
+                }
+                Interaction.reply({
+                    content: `-----FISH CAUGHT-----\n-----COMMON-----\n${common_inventory}\n-----RARE------\n${rare_inventory}\n-----LEGENDARY-----\n${legendary_inventory}`,
+                    ephemeral: false
+                })
+            })
+        }
     }
 
     else if (commandName === 'stats'){
