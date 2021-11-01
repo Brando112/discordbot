@@ -13,18 +13,55 @@ var conn = mysql.createConnection({
     password: "DiscordtheGame1",
     database: "discordbot"
 })
-var common_inventory;
-var rare_inventory;
-var legendary_inventory;
+
+function get_rand_fish_num(userid, pole){
+    if (pole === 'Default'){
+        base_chance = 1100
+        rare_chance = 16
+        legendary_chance = 1
+        var randnum = Math.floor(Math.random() * (10000 - 1 + 1) ) + 1;
+        return [1100, 16, 1, (Math.floor(Math.random() * (10000 - 1 + 1) ) + 1)]
+    }
+    else if (pole === 'Bamboo Rod'){
+        base_chance = 1089 
+        rare_chance = 32
+        legendary_chance = 2
+        var randnum = Math.floor(Math.random() * (9995 - 1 + 1) ) + 1;
+        return [base_chance, rare_chance, legendary_chance, randnum]
+    }
+    else if (pole ==='Treated Wood Rod'){
+        base_chance = 1079 
+        rare_chance = 46
+        legendary_chance = 3
+        var randnum = Math.floor(Math.random() * (10002 - 1 + 1) ) + 1;
+        return [1079, 46, 3, randnum]
+    }
+    else if (pole ==='Wyrdwood Rod'){
+        base_chance = 1069 
+        rare_chance = 64
+        legendary_chance = 4
+        var randnum = Math.floor(Math.random() * (10009 - 1 + 1) ) + 1;
+        return [1069, 64, 4, randnum]
+    }
+    else if(pole ==='Ironwood Rod'){
+        base_chance = 1058 
+        rare_chance = 80
+        legendary_chance = 5
+        var randnum = Math.floor(Math.random() * (10007 - 1 + 1) ) + 1;
+        return [1058, 80, 5, randnum]
+    }
+    else{
+        return "I'm stupid"
+    }
+}
 
 // Function for fishing
-function fish(userid, money){
-    var randnum = Math.floor(Math.random() * (10000 - 1 + 1) ) + 1;
-    let base_chance = 1100
-    let rare_chance = 16
-    let legendary_chance = 1
-
-
+function fish(userid, fish_chances){
+    base_chance = fish_chances[0]
+    console.log(base_chance)
+    rare_chance = fish_chances[1]
+    legendary_chance = fish_chances[2]
+    randnum = fish_chances[3];
     if (randnum < (base_chance)){ // Alaskan cod
         let sql;
         sql = `UPDATE player SET money = (money + 10) where id = '${userid}'`;
@@ -175,6 +212,24 @@ client.on('ready', () => {
     })
 
     commands?.create({
+        name: 'shop',
+        description: 'The place where you buy things.'
+    })
+
+    commands?.create({
+        name: 'buy',
+        description: 'The place where you buy things part 2.',
+        options: [
+            {
+                name: 'item',
+                description: 'The item you wish to buy.',
+                required: false,
+                type: Discord.Constants.ApplicationCommandOptionTypes.STRING
+            }
+        ]
+    })
+
+    commands?.create({
         name: 'inventory',
         description: 'Displays player inventory.',
         options: [
@@ -210,6 +265,84 @@ client.on('interactionCreate', async (Interaction) => {
             ephemeral: true
         })
     }
+
+    else if (commandName ==='shop'){
+        let item_list = '';
+        conn.query(`SELECT * FROM shop`, (err, rows) =>{
+            for (var i =0; i < rows.length; i++) {
+                item_name = rows[i].item_name;
+                item_cost = rows[i].item_cost;
+                item_list = `${item_list}` + `${item_name}: $${item_cost}\n`
+            }
+            Interaction.reply({
+                content: `${item_list}`,
+                ephemeral: true
+            })
+        })
+    }
+
+    else if (commandName ==='buy'){
+        const userid = Interaction.user.id
+        const bought = options.getString('item')
+        let item_dlist;
+        conn.query(`SELECT * FROM shop`, (err, rows) =>{
+            try{ 
+                conn.query(`SELECT * from shop where item_name = '${bought}'`, (err, rows) =>{
+                    if (rows.length >0){
+                        for (var i =0; i < rows.length; i++) {
+                            itemname = rows[i].item_name;
+                            item_dlist = `${item_dlist} ` + `${itemname}`
+                        }
+                        if ((item_dlist != null) || (item_dlist != '')){
+                            item_cost = rows[0].item_cost
+                            item_id = rows[0].item_id
+                            conn.query(`SELECT * FROM player where id = '${userid}'`, (err, rows) =>{
+                                user_money = rows[0].money
+                                new_user_money = user_money-item_cost;
+                                if (user_money >= item_cost){
+                                    sql = `UPDATE player SET money = ${new_user_money} WHERE id = '${userid}'`
+                                    conn.query(sql)
+                                    sql = `UPDATE player SET pole = '${bought}' WHERE id = '${userid}'`
+                                    console.log(bought)
+                                    conn.query(sql)
+                                    conn.query(`SELECT * FROM bought_items where id = '${userid}' AND item_name = '${bought}'`, (err, rows) =>{ 
+                                        if (rows.length <1){
+                                            sql = `INSERT INTO bought_items(item_id, item_name, item_cost, id) VALUES(${item_id}, '${bought}',${item_cost}, '${userid})`
+                                            Interaction.reply({
+                                                content: `You bought a(n) ${bought}`,
+                                                ephemeral: true
+                                            })
+                                        }
+                                        else{
+                                            Interaction.reply({
+                                                content: 'You already own this item.',
+                                                ephemeral: true
+                                            })
+                                        }
+                                    })
+                                }
+                                else{
+                                    Interaction.reply({
+                                        content: "You don't have enough money.",
+                                        ephemeral:true
+                                    })
+                                }
+                            })
+                        }
+                    }
+                    else{
+                        Interaction.reply({
+                            content: 'That item is not in the shop.',
+                            ephemeral: true
+                        })
+                    }
+                })
+            }
+            catch(error) {
+                console.log(error);
+            }
+        })
+    }    
 
     else if (commandName ==='inventory'){
         const dusername = options.getString('username')
@@ -292,7 +425,7 @@ client.on('interactionCreate', async (Interaction) => {
             let location = rows[0].location;
             Interaction.reply({
                 content: `Name: ${displayname}\nHP: ${hp}\nHunger: ${hunger}\nMoney: ${money}\nPole: ${pole}\nLocation: ${location}`,
-                ephemeral: true
+                ephemeral: false
             })
         })
     }
@@ -306,14 +439,15 @@ client.on('interactionCreate', async (Interaction) => {
             if(err) throw err;
             console.log(rows);
             let sql;
+            pole = rows[0].pole
 
             if (rows.length <1) {
                 sql = `INSERT INTO player(id, username, hp, hunger, money, pole, location) VALUES ('${userid}','${user_name}',100,100,0,'Default','Default')`
                 conn.query(sql);
             }
             
-
-            var fish_caught = fish(userid);
+            let fish_chances = get_rand_fish_num(userid, pole);
+            let fish_caught = fish(userid, fish_chances);
 
             conn.query(`SELECT * FROM fish WHERE id = '${userid}' AND fish_name = '${fish_caught[0]}';`, (err, rows) =>{
                 if(err) throw err;
