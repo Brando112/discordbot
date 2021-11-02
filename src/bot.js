@@ -432,19 +432,21 @@ client.on('interactionCreate', async (Interaction) => {
     
     else if (commandName === 'fish'){
         const userid = Interaction.user.id
+        //const userid = '616788057584304199';
         const user_name = (Interaction.user.tag)
         console.log(`${user_name} has fished. ${userid}`)
-
         conn.query(`SELECT * FROM player WHERE id = '${userid}';`, (err, rows) =>{
             if(err) throw err;
             console.log(rows);
             let sql;
-            pole = rows[0].pole
 
             if (rows.length <1) {
                 sql = `INSERT INTO player(id, username, hp, hunger, money, pole, location) VALUES ('${userid}','${user_name}',100,100,0,'Default','Default')`
                 conn.query(sql);
             }
+
+            pole = rows[0].pole
+            console.log(pole)
             
             let fish_chances = get_rand_fish_num(userid, pole);
             let fish_caught = fish(userid, fish_chances);
