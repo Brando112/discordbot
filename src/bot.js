@@ -6,6 +6,7 @@ const config = require("./data/config.json");
 const mysql = require('mysql');
 const intents = new Discord.Intents(32767);
 const client = new Discord.Client({ intents });
+const wait = require('util').promisify(setTimeout);
 
 var conn = mysql.createConnection({
     host: "localhost",
@@ -324,9 +325,15 @@ client.on('interactionCreate', async (Interaction) => {
 
             Interaction.reply({
                 content: `${user_name} caught a(n) ${fish_caught[0]}!`,
-                ephemeral: false
+                ephemeral: false,
             })
         })
+        async function delayed_message_delete(){
+                console.log("YOU ARE HERE")
+                await wait(10000) // deletes after x ms
+                Interaction.deleteReply(); 
+            }
+        delayed_message_delete();
     }
 })
 
