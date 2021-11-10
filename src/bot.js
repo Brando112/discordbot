@@ -111,6 +111,11 @@ client.on('interactionCreate', async (Interaction) => {
             content: 'pong',
             ephemeral: true
         })
+        async function delayed_message_delete(){
+            await wait(25000) // deletes after x ms
+            Interaction.deleteReply(); 
+        }
+        delayed_message_delete();
     }
     else if (commandName === 'add'){
         const num1 = options.getNumber('num1')
@@ -119,6 +124,11 @@ client.on('interactionCreate', async (Interaction) => {
             content: `The sum is ${num1 + num2}`, // Keep in mind that template literals uses "grave" instead of single quotes
             ephemeral: true
         })
+        async function delayed_message_delete(){
+            await wait(25000) // deletes after x ms
+            Interaction.deleteReply(); 
+        }
+        delayed_message_delete();
     }
 
     else if (commandName ==='shop'){
@@ -233,6 +243,11 @@ client.on('interactionCreate', async (Interaction) => {
                     content: `-----${dusername}-----\n-----COMMON-----\n${common_inventory}\n-----RARE------\n${rare_inventory}\n-----LEGENDARY-----\n${legendary_inventory}`,
                     ephemeral: false
                 })
+                async function delayed_message_delete(){
+                    await wait(25000) // deletes after x ms
+                    Interaction.deleteReply(); 
+                }
+                delayed_message_delete();
             })
         }
         else {
@@ -262,6 +277,11 @@ client.on('interactionCreate', async (Interaction) => {
                     content: `-----FISH CAUGHT-----\n-----COMMON-----\n${common_inventory}\n-----RARE------\n${rare_inventory}\n-----LEGENDARY-----\n${legendary_inventory}`,
                     ephemeral: false
                 })
+                async function delayed_message_delete(){
+                    await wait(25000) // deletes after x ms
+                    Interaction.deleteReply(); 
+                }
+                delayed_message_delete();   
             })
         }
     }
@@ -282,6 +302,11 @@ client.on('interactionCreate', async (Interaction) => {
                 content: `Name: ${displayname}\nHP: ${hp}\nHunger: ${hunger}\nMoney: ${money}\nPole: ${pole}\nLocation: ${location}`,
                 ephemeral: false
             })
+            async function delayed_message_delete(){
+                await wait(25000) // deletes after x ms
+                Interaction.deleteReply(); 
+            }
+            delayed_message_delete();
         })
     }
     
@@ -329,8 +354,7 @@ client.on('interactionCreate', async (Interaction) => {
             })
         })
         async function delayed_message_delete(){
-                console.log("YOU ARE HERE")
-                await wait(10000) // deletes after x ms
+                await wait(25000) // deletes after x ms
                 Interaction.deleteReply(); 
             }
         delayed_message_delete();
