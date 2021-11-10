@@ -5,7 +5,7 @@ from discord.ext import commands
 
 client = discord.Client()
 
-token = "OTAwNDQyMDQ3NzEyOTg5MjU0.YXBYAQ.geTgkzvegSYkLRirjlHDe423Zqo"
+token = "NOPE"
 
 @client.event
 async def on_ready():
