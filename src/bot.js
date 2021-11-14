@@ -60,6 +60,23 @@ client.on('ready', () => {
             }
         ]
     })
+    commands?.create({
+        name: "rng",
+        description: "A random number generator",
+        options: [{
+                name: "Min",
+                description: "The minumum number to be generated",
+                required: true,
+                type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
+            },
+            {
+                name: "Max",
+                description: "The maximum number to be generated",
+                required: true,
+                type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
+            }
+        ]
+    })
 
     commands?.create({
         name: 'stats',
@@ -110,6 +127,20 @@ client.on('interactionCreate', async (Interaction) => {
         Interaction.reply({
             content: 'pong',
             ephemeral: true
+        })
+        async function delayed_message_delete(){
+            await wait(25000) // deletes after x ms
+            Interaction.deleteReply(); 
+        }
+        delayed_message_delete();
+    }
+    else if (commandName === 'rng'){
+        const min = options.getNumber('Min')
+        const max = options.getNumber('Max')
+        var number_generated = Math.floor(Math.random() * (max - min + 1) + min);
+        Interaction.reply({
+            content: `The number generated is: ${number_generated}`,
+            ephemeral: false
         })
         async function delayed_message_delete(){
             await wait(25000) // deletes after x ms
