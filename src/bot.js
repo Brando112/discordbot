@@ -8,6 +8,8 @@ const intents = new Discord.Intents(32767);
 const client = new Discord.Client({ intents });
 const wait = require('util').promisify(setTimeout);
 
+var enemyHP = 0
+
 var conn = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -43,6 +45,16 @@ client.on('ready', () => {
     })
 
     commands?.create({
+        name: "spawn",
+        description: "Spawns an enemy if one is currently not spawned in."
+    })
+
+    commands?.create({
+        name: "attack",
+        description: "Attacks the enemy"
+    })
+
+    commands?.create({
         name: 'add',
         description: 'Adds two numbers.',
         options: [
@@ -63,14 +75,15 @@ client.on('ready', () => {
     commands?.create({
         name: "rng",
         description: "A random number generator",
-        options: [{
-                name: "Min",
+        options: [
+            {
+                name: "min",
                 description: "The minumum number to be generated",
                 required: true,
                 type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
             },
             {
-                name: "Max",
+                name: "max",
                 description: "The maximum number to be generated",
                 required: true,
                 type: Discord.Constants.ApplicationCommandOptionTypes.NUMBER
@@ -134,9 +147,55 @@ client.on('interactionCreate', async (Interaction) => {
         }
         delayed_message_delete();
     }
+    else if (commandName === 'spawn')
+    {
+        if (enemyHP === 0)
+        {
+            enemyHP = 10
+            Interaction.reply({
+                content: 'An enemy has been spawned!'
+            })
+        }
+        else
+        {
+            Interaction.reply({
+                content: "There is already an enemy in play."
+            })
+        }
+    }
+    else if (commandName === 'attack')
+    {
+        const userid = Interaction.user.id
+        conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) =>{
+            let user_name = rows[0].username
+            if (enemyHP > 0)
+            {
+                enemyHP = enemyHP - 2
+                if (enemyHP <= 0)
+                {
+                    Interaction.reply({
+                        content: `Congrats ${user_name} has killed the monster!`
+                    })
+
+                }
+                else
+                {
+                    Interaction.reply({
+                        content: `You attack the enemy for: 2hp\nThe enemy has: ${enemyHP} left`
+                    })
+                }
+            }
+            else
+            {
+                Interaction.reply({
+                    content: "There is currently no enemy to attack!"
+                })
+            }
+        })
+    }
     else if (commandName === 'rng'){
-        const min = options.getNumber('Min')
-        const max = options.getNumber('Max')
+        const min = options.getNumber('min')
+        const max = options.getNumber('max')
         var number_generated = Math.floor(Math.random() * (max - min + 1) + min);
         Interaction.reply({
             content: `The number generated is: ${number_generated}`,
@@ -242,7 +301,6 @@ client.on('interactionCreate', async (Interaction) => {
 
     else if (commandName ==='inventory'){
         const dusername = options.getString('username')
-
         let common_inventory = '';
         let rare_inventory = '';
         let legendary_inventory = '';

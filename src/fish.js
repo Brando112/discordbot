@@ -130,7 +130,7 @@ module.exports = {
             base_chance = 1079 
             rare_chance = 46
             legendary_chance = 3
-            var randnum = Math.floor(Math.random() * (10002 - 1 + 1) ) + 1;
+            var randnum = Math.floor(Math.random() * (9990 - 1 + 1) ) + 1;
             return [1079, 46, 3, randnum]
         }
         else if (pole ==='Wyrdwood Rod'){
