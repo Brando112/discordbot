@@ -1,5 +1,5 @@
 module.exports = {
-    shop_cmd: function(userid, bought){
+    buy_cmd: function(userid, bought, item_dlist){
         const mysql = require('mysql');
         var conn = mysql.createConnection({
             host: "localhost",
@@ -8,11 +8,11 @@ module.exports = {
             database: "discordbot"
         })
         
-        let item_dlist;
         conn.query(`SELECT * FROM shop`, (err, rows) =>{
             try{ 
                 conn.query(`SELECT * from shop where item_name = '${bought}'`, (err, rows) =>{
                     if (rows.length >0){
+                        let item_dlist;
                         for (var i =0; i < rows.length; i++) {
                             itemname = rows[i].item_name;
                             item_dlist = `${item_dlist} ` + `${itemname}`
@@ -32,29 +32,28 @@ module.exports = {
                                     conn.query(`SELECT * FROM bought_items where id = '${userid}' AND item_name = '${bought}'`, (err, rows) =>{ 
                                         if (rows.length <1){
                                             sql = `INSERT INTO bought_items(item_id, item_name, item_cost, id) VALUES(${item_id}, '${bought}',${item_cost}, '${userid})`
-                                            return (`You bought a(n) ${bought}`)
+                                            return `You bought a(n) ${bought}`
                                         }
                                         else{
-                                            return('You alrady own this item.')
+                                            
+                                            return 'You already own this item.'
                                         }
                                     })
                                 }
                                 else{
-                                    return ("You don't have enough money.")
+                                    
+                                    return "You don't have enough money."
                                 }
                             })
                         }
                     }
                     else{
-                        console.log("YOU ARE HERE")
-                        let returned = "That item is not in the shop."
-                        return returned
+                        return 'That item is not in the shop.'
                     }
                 })
             }
             catch(error) {
                 console.log(error);
-                return error
             }
         })
 

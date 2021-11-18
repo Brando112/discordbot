@@ -358,7 +358,7 @@ client.on('interactionCreate', async (Interaction) => {
                         rare_inventory = `${rare_inventory}` +  `${fish_name}: ${fish_count}\n`;
                     }
                     else if (fish_rarity === 'LEGENDARY'){
-                        legendary_inventory = `${LEGENDARY_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                        legendary_inventory = `${legendary_inventory}` +  `${fish_name}: ${fish_count}\n`;
                     }
                 }
                 if (rare_inventory == null){

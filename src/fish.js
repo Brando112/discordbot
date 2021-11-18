@@ -107,7 +107,7 @@ module.exports = {
             let sql;
             sql = `UPDATE player SET money = (money + 5000) where id = '${userid}'`;
             conn.query(sql);
-            return ['Devils Hole Pupfish', 5000, '-----LEGENDARY-----', true]
+            return ['Devils Hole Pupfish', 5000, 'LEGENDARY', true]
         }
     },
 
