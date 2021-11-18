@@ -128,7 +128,9 @@ client.on('ready', () => {
         ]
     })
 });
+
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // Is fired when an interaction is done (/fish)
 client.on('interactionCreate', async (Interaction) => {
     if (!Interaction.isCommand()) { // Checks to see if the interaction is a command and if it isn't ignores the following checks
@@ -173,7 +175,7 @@ client.on('interactionCreate', async (Interaction) => {
             {
                 conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) => {
                     weapon = rows[0].player_weapon
-                    damage_done = attack.playerAttack(userid, weapon)
+                    damage_done = attack.playerAttack(userid, weapon) // generates a number based off of the players weapon
                     enemyHP = enemyHP - damage_done
                     if (enemyHP > 0)
                     {
