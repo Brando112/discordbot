@@ -151,6 +151,5 @@ module.exports = {
             return "I'm stupid"
         }
     }
-
 }
 

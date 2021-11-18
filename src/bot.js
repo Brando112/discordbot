@@ -1,6 +1,7 @@
 console.clear();
 
 const fish = require('./fish');
+const attack = require('./attack.js')
 const Discord = require('discord.js');
 const config = require("./data/config.json");
 const mysql = require('mysql');
@@ -127,7 +128,7 @@ client.on('ready', () => {
         ]
     })
 });
-
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Is fired when an interaction is done (/fish)
 client.on('interactionCreate', async (Interaction) => {
     if (!Interaction.isCommand()) { // Checks to see if the interaction is a command and if it isn't ignores the following checks
@@ -170,20 +171,24 @@ client.on('interactionCreate', async (Interaction) => {
             let user_name = rows[0].username
             if (enemyHP > 0)
             {
-                enemyHP = enemyHP - 2
-                if (enemyHP <= 0)
-                {
-                    Interaction.reply({
-                        content: `Congrats ${user_name} has killed the monster!`
-                    })
-
-                }
-                else
-                {
-                    Interaction.reply({
-                        content: `You attack the enemy for: 2hp\nThe enemy has: ${enemyHP} left`
-                    })
-                }
+                conn.query(`SELECT * FROM player WHERE id = '${userid}'`, (err, rows) => {
+                    weapon = rows[0].player_weapon
+                    damage_done = attack.playerAttack(userid, weapon)
+                    enemyHP = enemyHP - damage_done
+                    if (enemyHP > 0)
+                    {
+                        Interaction.reply({
+                            content: `${user_name} attacked the enemy for: ${damage_done}hp\nThe enemy has: ${enemyHP}hp left`
+                        })
+                    }
+                    else
+                    {
+                        Interaction.reply({
+                            content: `--------Congrats ${user_name} has killed the monster!--------`
+                        })
+                    }
+                        
+                })
             }
             else
             {
@@ -225,12 +230,12 @@ client.on('interactionCreate', async (Interaction) => {
         let item_list = '';
         conn.query(`SELECT * FROM shop`, (err, rows) =>{
             for (var i =0; i < rows.length; i++) {
-                item_name = rows[i].item_name;
-                item_cost = rows[i].item_cost;
+                item_name = `${rows[i].item_name}`;
+                item_cost = `${rows[i].item_cost}`;
                 item_list = `${item_list}` + `${item_name}: $${item_cost}\n`
             }
             Interaction.reply({
-                content: `${item_list}`,
+                content: `----------------------------------\n${item_list}---------------------------------`,
                 ephemeral: true
             })
         })
