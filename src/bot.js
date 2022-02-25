@@ -10,6 +10,7 @@ const client = new Discord.Client({ intents });
 const wait = require('util').promisify(setTimeout);
 
 var enemyHP = 0
+var attacking_users = []
 
 var conn = mysql.createConnection({
     host: "localhost",
@@ -23,7 +24,8 @@ var conn = mysql.createConnection({
 client.on('ready', () => {
     console.log("Bot is online")
 
-    const guildId = '900543981132337193'
+    //const guildId = '900543981132337193'
+    const guildId = '654014830503657502'
     const guild = client.guilds.cache.get(guildId)
     let commands
 
@@ -154,9 +156,11 @@ client.on('interactionCreate', async (Interaction) => {
     {
         if (enemyHP === 0)
         {
-            enemyHP = 10
+            enemyspawned = attack.spawnEnemy()
+            enemy = enemyspawned[0]
+            enemyHP = enemyspawned[1]
             Interaction.reply({
-                content: 'An enemy has been spawned!'
+                content: `A(n) ${enemy} has spawned with ${enemyHP}hp`
             })
         }
         else
@@ -179,13 +183,22 @@ client.on('interactionCreate', async (Interaction) => {
                     enemyHP = enemyHP - damage_done
                     if (enemyHP > 0)
                     {
-                        Interaction.reply({
-                            content: `${user_name} attacked the enemy for: ${damage_done}hp\nThe enemy has: ${enemyHP}hp left`
+                        Interaction.reply
+                        ({
+                            content: `${user_name} attacked the ${enemy} for: ${damage_done}hp\nThe ${enemy} has: ${enemyHP}hp left`
                         })
                     }
                     else
-                    {
-                        Interaction.reply({
+                    {      
+                        for (var i = 0; i < attacking_users.length; i++)
+                        {
+                            console.log("YOU ARE HERE")
+                            sql = 'UPDATE player SET money = (money + 10) where username = `${attacking_users[i]}`'
+                            conn.query(sql)
+                        }
+                        attacking_users = []                      
+                        Interaction.reply
+                        ({
                             content: `--------Congrats ${user_name} has killed the monster!--------`
                         })
                     }
@@ -326,7 +339,7 @@ client.on('interactionCreate', async (Interaction) => {
                         rare_inventory = `${rare_inventory}` +  `${fish_name}: ${fish_count}\n`;
                     }
                     else if (fish_rarity === 'LEGENDARY'){
-                        legendary_inventory = `${LEGENDARY_inventory}` +  `${fish_name}: ${fish_count}\n`;
+                        legendary_inventory = `${legendary_inventory}` +  `${fish_name}: ${fish_count}\n`;
                     }
                 }
                 if (rare_inventory == null){
